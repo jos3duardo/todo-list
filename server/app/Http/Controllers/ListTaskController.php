@@ -24,10 +24,11 @@ class ListTaskController extends Controller
      * Display a listing of the resource.
      *
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            return ['status' => true , 'data' => ListTaskResource::collection(ListTask::all())];
+            $user = $request->user();
+            return ['status' => true , 'data' => ListTaskResource::collection(ListTask::user($user->id)->get())];
         }catch (\Exception $err){
             return $err->getMessage();
         }

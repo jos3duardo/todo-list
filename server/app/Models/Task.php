@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Tenant\TenantModels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, TenantModels;
 
     protected $fillable = [
         'title', 'date','user_id','category_id','sticky_notes_id'

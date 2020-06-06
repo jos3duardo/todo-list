@@ -11,22 +11,22 @@ class ListTaskService
 {
     public function validateListTask(Request $request){
         return Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255','unique:list_tasks'],
+            'title' => ['required', 'string', 'max:255'],
         ]);
     }
 
     public function validateUpdateListTask(Request $request, ListTask $listTask){
         return Validator::make($request->all(), [
-           'title' => ['required','string','max:255', Rule::unique('tasks')->ignore($listTask->id)]
+           'title' => ['required','string','max:255']
         ]);
     }
 
     public function createListTask(Request $request){
         $user = $request->user();
-        $listTask = new ListTask();
-        $listTask->title = $request->title;
-        $listTask->user_id = $user->id;
-        $listTask->save();
+        $listTask = ListTask::firstOrCreate([
+            'title' => $request->title,
+            'user_id' => $user->id
+        ]);
         return $listTask;
     }
 

@@ -13,7 +13,7 @@ class TaskService
 
     public function validateTask(Request $request){
         return Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255','unique:tasks'],
+            'title' => ['required', 'string', 'max:255'],
             'date' => ['required'],
             'category_id' => ['required'],
         ]);
@@ -21,20 +21,20 @@ class TaskService
 
     public function validateUpdateTask(Request $request, Task $task){
         return Validator::make($request->all(), [
-            'title' => ['required','string','max:255', Rule::unique('tasks')->ignore($task->id)],
+            'title' => ['required','string','max:255'],
             'date' => ['required'],
-            'category_id' => ['required'],
+            'category_id' => ['required']
         ]);
     }
 
     public function createTask(Request $request){
         $user = $request->user();
-        $task = new Task();
-        $task->title = $request->title;
-        $task->date = dateParse($request->date);
-        $task->category_id = $request->category_id;
-        $task->user_id = $user->id;
-        $task->save();
+        $task = Task::firstOrCreate([
+            'title' => $request->title,
+            'date' => dateParse($request->date),
+            'category_id' => $request->category_id,
+            'user_id' => $user->id,
+        ]);
         return $task;
     }
 

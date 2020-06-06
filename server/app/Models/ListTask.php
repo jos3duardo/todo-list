@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Tenant\TenantModels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ListTask extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, TenantModels;
 
     protected $fillable = [
         'title', 'user_id'

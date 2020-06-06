@@ -24,10 +24,11 @@ class TaskController extends Controller
      * Display a listing of the resource.
      *
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            return ['status' => true , 'data' => TaskResource::collection(Task::all())];
+            $user = $request->user();
+            return ['status' => true , 'data' => TaskResource::collection(Task::user($user->id)->get())];
         }catch (\Exception $err){
             return $err->getMessage();
         }

@@ -24,10 +24,11 @@ class StickyNoteController extends Controller
      * Display a listing of the resource.
      *
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            return ['status' => true , 'data' =>  StickyNotesResource::collection(StickyNote::all())];
+            $user = $request->user();
+            return ['status' => true , 'data' =>  StickyNotesResource::collection(StickyNote::user($user->id)->get())];
         }catch (\Exception $err){
             return $err->getMessage();
         }
