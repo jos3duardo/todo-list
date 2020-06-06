@@ -22,14 +22,18 @@ class ListTaskService
     }
 
     public function createListTask(Request $request){
+        $user = $request->user();
         $listTask = new ListTask();
         $listTask->title = $request->title;
+        $listTask->user_id = $user->id;
         $listTask->save();
         return $listTask;
     }
 
     public function updateListTask(Request $request, ListTask $listTask){
+        $user = $request->user();
         $listTask->fill($request->all());
+        $listTask->user_id = $user->id;
         $listTask->save();
 
         return $listTask;

@@ -9,7 +9,9 @@ class StickyNote extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title'];
+    protected $fillable = [
+        'title', 'user_id','task_id'
+    ];
 
     public function user()
     {

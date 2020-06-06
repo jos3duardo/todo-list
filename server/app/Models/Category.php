@@ -9,7 +9,9 @@ class Category extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name','user_id'
+    ];
 
     public function getCreatedAtAttribute(){
         if ($this->attributes['created_at'] != null)

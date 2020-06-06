@@ -20,9 +20,9 @@ class CreateTasksTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories');
 
-            $table->unsignedBigInteger('sticky_notes_id');
+            $table->unsignedBigInteger('sticky_notes_id')->nullable();
             $table->foreign('sticky_notes_id')->references('id')->on('sticky_notes');
 
             $table->timestamps();

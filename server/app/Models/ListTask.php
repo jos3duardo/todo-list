@@ -9,7 +9,9 @@ class ListTask extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title'];
+    protected $fillable = [
+        'title', 'user_id'
+    ];
 
     public function getCreatedAtAttribute(){
         if ($this->attributes['created_at'] != null)

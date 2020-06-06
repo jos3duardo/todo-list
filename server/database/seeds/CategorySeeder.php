@@ -11,6 +11,9 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table('categories')->insert([
+            'name' => 'Sem Categoria',
+            'user_id' => 1,
+        ]);
     }
 }
