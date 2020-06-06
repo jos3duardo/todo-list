@@ -163,7 +163,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         try {
-            if($user->delete()){
+            if(!$user->delete()){
                 return [
                     "status" => false,
                     "errors" => 'O usuario não pode ser apagado'
