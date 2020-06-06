@@ -14,8 +14,8 @@ DB_PASSWORD=root
 ...
 ```
 
-- criar servidor local
-``´bash
+- criar servidor local  
+```bash
 pgp artisan serve
 ```
 
