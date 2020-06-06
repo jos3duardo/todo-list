@@ -1,7 +1,7 @@
 <template>
   <span>
     <header>
-      <nav-bar-vue cor="green darken-1" url="/" logo="Social">
+      <nav-bar-vue cor="green darken-1" url="/" :logo="sistema">
         <li> <router-link to="/">Home</router-link></li>
         <li v-if="!usuario"> <router-link to="/login">Login</router-link></li>
         <li v-if="!usuario"> <router-link to="/cadastro">Cadastra-se</router-link></li>
@@ -11,29 +11,15 @@
     </header>
     <main>
       <div class="container">
-        <div class="row">
 
-          <grid-vue tamanho="4">
-            <card-menu-vue>
-              <slot name="menuesquerdo"></slot>
-            </card-menu-vue>
-            <card-menu-vue>
-             <slot name="menuesquerdoamigo"/>
-            </card-menu-vue>
-          </grid-vue>
-          <grid-vue tamanho="8">
-            <slot name="principal"></slot>
-          </grid-vue>
-
-        </div>
       </div>
     </main>
-    <footer-vue cor="green darken-1" logo="Social" descricao="Teste de descrição" ano="2020">
-        <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-        <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-        <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-    </footer-vue>
+<!--    <footer-vue cor="green darken-1" logo="Social" descricao="Teste de descrição" ano="2020">-->
+<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>-->
+<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>-->
+<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>-->
+<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>-->
+<!--    </footer-vue>-->
   </span>
 </template>
 
@@ -44,10 +30,11 @@
   import CardMenuVue from "../components/layouts/CardMenuVue";
 
   export default {
-    name: 'SiteTemplate',
+    name: 'SiteLayout',
     data(){
       return {
-        usuario: false
+        usuario: false,
+        sistema: process.env.APP_NAME
       }
     },
     components: {

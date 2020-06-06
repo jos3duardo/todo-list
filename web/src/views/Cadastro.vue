@@ -1,34 +1,36 @@
 <template>
-  <login-template>
+  <login-layout>
       <span slot="menuesquerdo">
-        <img src="https://static.todamateria.com.br/upload/re/de/redessociaisinteracaopessoas-cke.jpg" class="responsive-img" srcset="">
+        <img src="https://playground.xyz/jobs/img/hero.png" class="responsive-img" srcset="">
       </span>
       <span slot="principal">
         <span>
           <h2>Cadastro</h2>
           <input type="text" placeholder="Nome" autocomplete="off" v-model="name">
+          <input type="text" placeholder="Usuario" autocomplete="off" v-model="username">
           <input type="email" placeholder="E-mail" autocomplete="off" v-model="email">
           <input type="password" placeholder="Senha" autocomplete="off" v-model="password">
           <input type="password" placeholder="Confirme sua Senha" autocomplete="off" v-model="password_confirmation">
           <button class="btn waves-light waves-effect" v-on:click="cadastro()">Enviar</button>
-          <router-link to="/login"  class="btn waves-light waves-effect orange">Já tenho conta</router-link>
+          <router-link to="/login"  id="espaco"  class="btn waves-light waves-effect orange">Já tenho conta</router-link>
         </span>
       </span>
-  </login-template>
+  </login-layout>
 
 </template>
 
 <script>
-  import LoginTemplate from "../../templates/LoginTemplate";
+  import LoginLayout from "../layouts/LoginLayout";
 
   export default {
     name: 'Cadastro',
     components: {
-      LoginTemplate
+      LoginLayout
     },
     data () {
       return {
         name: '',
+        username: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -37,8 +39,9 @@
     methods: {
       cadastro(){
         console.log("ok");
-        this.$http.post(this.$urlAPI+`register`, {
+        this.$http.post(this.$urlAPI+`users`, {
           name: this.name,
+          username: this.username,
           email: this.email,
           password:this.password,
           password_confirmation: this.password_confirmation
@@ -76,5 +79,8 @@
 <style scoped>
   h1, h2 {
     font-weight: normal;
+  }
+  #espaco{
+      margin-left: 15px;
   }
 </style>

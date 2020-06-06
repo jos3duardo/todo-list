@@ -1,35 +1,44 @@
 <template>
-  <login-template>
-      <span slot="menuesquerdo">
-        <img src="https://static.todamateria.com.br/upload/re/de/redessociaisinteracaopessoas-cke.jpg" class="responsive-img" srcset="">
+    <login-layout >
+      <span slot="menuesquerdo" >
+        <img src="https://playground.xyz/jobs/img/hero.png" class="responsive-img" srcset="">
       </span>
       <span slot="principal">
-
-        <span>
+        <span >
           <h2>Login</h2>
-          <input type="email" placeholder="E-mail" autocomplete="off" v-model="email">
-          <input type="password" placeholder="Senha" autocomplete="off" v-model="password">
-          <button class="btn waves-light waves-effect" v-on:click="login()">Entrar</button>
-          <router-link to="/cadastro" class="btn waves-light waves-effect orange">Cadastra-se</router-link>
+          <div class="row">
+            <div class="col s12 m12">
+            <input type="text" placeholder="Usuario" autocomplete="off" v-model="username">
+            </div>
+            <div class="col s12 m12">
+              <input type="password" placeholder="Senha" autocomplete="off" v-model="password">
+            </div>
+            <div class="col s12 m6">
+              <button class="btn waves-light waves-effect" v-on:click="login()">Entrar</button>
+            </div>
+            <div class="col s12 m6">
+              <router-link id="espaco" to="/cadastro" class="btn waves-light waves-effect orange">Cadastra-se</router-link>
+            </div>
+          </div>
         </span>
       </span>
 
 
-  </login-template>
+    </login-layout>
 
 </template>
 
 <script>
-  import LoginTemplate from "../../templates/LoginTemplate";
+  import LoginLayout from "../layouts/LoginLayout";
 
   export default {
     name: 'Login',
     components: {
-      LoginTemplate,
+      LoginLayout,
     },
     data () {
       return {
-       email: '',
+       username: '',
        password: ''
       }
     },
@@ -37,7 +46,7 @@
         login(){
           console.log("ok");
           this.$http.post(this.$urlAPI+`login`, {
-            username: this.email,
+            username: this.username,
             password:this.password
           })
           .then(response => {
@@ -73,5 +82,9 @@
 <style scoped>
   h1, h2 {
     font-weight: normal;
+  }
+
+  #login{
+    margin-top: 16px;
   }
 </style>
