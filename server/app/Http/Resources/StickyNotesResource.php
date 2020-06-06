@@ -14,6 +14,11 @@ class StickyNotesResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'titulo' => $this->title,
+            'tarefa' => $this->task->title,
+            'usuario' => $this->user->name
+        ];
     }
 }

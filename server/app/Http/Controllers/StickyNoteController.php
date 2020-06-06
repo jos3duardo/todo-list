@@ -49,7 +49,7 @@ class StickyNoteController extends Controller
                 ];
             }
             $stickyNote = $this->stickyNoteService->createStickyNote($request);
-            return ['status' => true , 'data' =>  $stickyNote];
+            return ['status' => true , 'data' => new StickyNotesResource($stickyNote)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -63,7 +63,7 @@ class StickyNoteController extends Controller
     public function show(StickyNote $stickyNote)
     {
         try {
-            return ['status' => true , 'data' =>  $stickyNote];
+            return ['status' => true , 'data' => new StickyNotesResource($stickyNote)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -86,7 +86,7 @@ class StickyNoteController extends Controller
                 ];
             }
             $stickyNote = $this->stickyNoteService->updateStickyNote($request, $stickyNote);
-            return ['status' => true , 'data' =>  $stickyNote];
+            return ['status' => true , 'data' => new StickyNotesResource($stickyNote)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
