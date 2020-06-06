@@ -101,7 +101,10 @@ class UserController extends Controller
         try {
             return [
                 "status" => true,
-                "user" => new UserResource($user)
+                "user" => new UserResource($user),
+//                "category" => $user->category
+//                "sticky" => $user->stickynote
+
             ];
         }catch (\Exception $err){
             return $err->getMessage();

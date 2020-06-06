@@ -56,4 +56,12 @@ class User extends Authenticatable
     public function getImageAttribute($value){
         return asset('images/users/'.$value);
     }
+
+    public function stickynote(){
+        return $this->hasMany(StickyNote::class);
+    }
+
+    public function category(){
+        return $this->hasMany(Category::class);
+    }
 }

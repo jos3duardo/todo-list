@@ -10,4 +10,5 @@ Route::middleware('auth:sanctum')->group( function (){
     Route::apiResource('category','CategoryController');
     Route::apiResource('list-task','ListTaskController');
     Route::apiResource('task','TaskController');
+    Route::apiResource('sticky-note','StickyNoteController');
 });
