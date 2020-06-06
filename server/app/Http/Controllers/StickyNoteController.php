@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StickyNotesResource;
 use App\Models\StickyNote;
 use App\Service\StickyNoteService;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class StickyNoteController extends Controller
     public function index()
     {
         try {
-            return ['status' => true , 'data' =>  StickyNote::with('user')->get()];
+            return ['status' => true , 'data' =>  StickyNotesResource::collection(StickyNote::all())];
         }catch (\Exception $err){
             return $err->getMessage();
         }
