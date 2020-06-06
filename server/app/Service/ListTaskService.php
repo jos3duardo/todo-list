@@ -1,40 +1,37 @@
 <?php
 
-
 namespace App\Service;
 
-use App\Models\Task;
+use App\Models\ListTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class TaskService
+class ListTaskService
 {
-
-    public function validateTask(Request $request){
+    public function validateListTask(Request $request){
         return Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255','unique:tasks'],
+            'title' => ['required', 'string', 'max:255','unique:list_tasks'],
         ]);
     }
 
-    public function validateUpdateTask(Request $request, Task $task){
+    public function validateUpdateListTask(Request $request, ListTask $listTask){
         return Validator::make($request->all(), [
-           'title' => ['required','string','max:255', Rule::unique('tasks')->ignore($task->id)]
+           'title' => ['required','string','max:255', Rule::unique('tasks')->ignore($listTask->id)]
         ]);
     }
 
-    public function createTask(Request $request){
-        $task = new Task();
-        $task->title = $request->title;
-        $task->save();
-        return $task;
+    public function createListTask(Request $request){
+        $listTask = new ListTask();
+        $listTask->title = $request->title;
+        $listTask->save();
+        return $listTask;
     }
 
-    public function updateTasnk(Request $request, Task $task){
-        $task->fill($request->all());
-        $task->save();
+    public function updateListTask(Request $request, ListTask $listTask){
+        $listTask->fill($request->all());
+        $listTask->save();
 
-        return $task;
+        return $listTask;
     }
-
 }
