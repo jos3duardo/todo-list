@@ -3,11 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Service\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    private $categoryService;
+
+    /**
+     * CategoryController constructor.
+     * @param CategoryService $categoryService
+     */
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,28 +41,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $user = $request->user();
-            $data = $request->all();
-            $validate = Validator::make($data, [
-                'name' => ['required', 'string', 'max:255','unique:categories'],
-            ]);
-
+            $validate = $validate = $this->categoryService->validateCategory($request);;
             if ($validate->fails()){
                 return [
                     "status" => false,
                     "errors" => $validate->errors()
                 ];
             }
-
-            $category = new Category();
-            $category->name = $request->name;
-            $category->user_id = $user->id;
-            $category->save();
+            $category = $this->categoryService->createCategory($request);
             return ['status' => true , 'data' =>  $category];
         }catch (\Exception $err){
             return $err->getMessage();
         }
-
     }
 
     /**
@@ -76,6 +78,14 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         try {
+            $validate = $this->categoryService->validateCategory($request);
+            if ($validate->fails()){
+                return [
+                    "status" => false,
+                    "errors" => $validate->errors()
+                ];
+            }
+            $category = $this->categoryService->createCategory($request);
             return ['status' => true , 'data' =>  $category];
         }catch (\Exception $err){
             return $err->getMessage();
