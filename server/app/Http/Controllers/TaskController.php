@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Service\CategoryService;
+use App\Http\Resources\TaskResource;
+use App\Models\Task;
+use App\Service\TaskService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class TaskController extends Controller
 {
-    private $categoryService;
+    private $taskService;
 
     /**
-     * CategoryController constructor.
-     * @param CategoryService $categoryService
+     * TaskController constructor.
+     * @param TaskService $taskService
      */
-    public function __construct(CategoryService $categoryService)
+    public function __construct(TaskService $taskService)
     {
-        $this->categoryService = $categoryService;
+        $this->taskService = $taskService;
     }
 
     /**
@@ -27,7 +27,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            return ['status' => true , 'data' =>  Category::all()];
+            return ['status' => true , 'data' => TaskResource::collection(Task::all())];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -41,15 +41,15 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $validate = $validate = $this->categoryService->validateCategory($request);;
+            $validate = $validate = $this->taskService->validateTask($request);;
             if ($validate->fails()){
                 return [
                     "status" => false,
                     "errors" => $validate->errors()
                 ];
             }
-            $category = $this->categoryService->createCategory($request);
-            return ['status' => true , 'data' =>  $category];
+            $task = $this->taskService->createTask($request);
+            return ['status' => true , 'data' => new TaskResource($task)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -58,12 +58,12 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Category $category
+     * @param Task $task
      */
-    public function show(Category $category)
+    public function show(Task $task)
     {
         try {
-            return ['status' => true , 'data' =>  $category];
+            return ['status' => true , 'data' => new TaskResource($task)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -73,20 +73,20 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Category $category
+     * @param Task $task
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Task $task)
     {
         try {
-            $validate = $this->categoryService->validateCategory($request);
+            $validate = $this->taskService->validateUpdateTask($request, $task);
             if ($validate->fails()){
                 return [
                     "status" => false,
                     "errors" => $validate->errors()
                 ];
             }
-            $category = $this->categoryService->updateCategory($request, $category);
-            return ['status' => true , 'data' =>  $category];
+            $task = $this->taskService->updateTasnk($request, $task);
+            return ['status' => true , 'data' => new TaskResource($task)];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -95,20 +95,20 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Category $category
+     * @param Task $task
      */
-    public function destroy(Category $category)
+    public function destroy(Task $task)
     {
         try {
-            if(!$category->delete()){
+            if(!$task->delete()){
                 return [
                     "status" => false,
-                    "errors" => 'Categoria não pode ser apagada.'
+                    "errors" => 'Tarefa não pode ser apagada.'
                 ];
             }
             return [
                 "status" => true,
-                "message" => 'Categoria apagada.'
+                "message" => 'Tarefa apagada.'
             ];
         }catch (\Exception $err){
             return $err->getMessage();

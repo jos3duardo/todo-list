@@ -166,7 +166,7 @@ class UserController extends Controller
             if(!$user->delete()){
                 return [
                     "status" => false,
-                    "errors" => 'O usuario não pode ser apagado'
+                    "errors" => 'Usuario não pode ser apagado'
                 ];
             }
             return [

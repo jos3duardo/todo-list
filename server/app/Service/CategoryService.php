@@ -27,4 +27,12 @@ class CategoryService
         return $category;
     }
 
+    public function updateCategory(Request $request, Category $category){
+        $user = $request->user();
+        $category->fill($request->all());
+        $category->user_id = $user->id;
+        $category->save();
+
+        return $category;
+    }
 }
