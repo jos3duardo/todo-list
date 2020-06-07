@@ -32,7 +32,7 @@
     data(){
       return {
         usuario: false,
-        logo: 'Lista de afazeres'
+        logo: 'Tarefas'
       }
     },
     components: {

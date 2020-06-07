@@ -1,10 +1,10 @@
 <template>
     <div :id="identificador" class="modal">
         <div class="modal-content">
-            <h4>{{titulo}}</h4>
+            <h5>{{titulo}}</h5>
             <slot name="content"></slot>
-        </div>
-        <div class="modal-footer">
+<!--        </div>-->
+<!--        <div class="modal-footer">-->
             <slot name="footer"></slot>
 <!--            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fecha</a>-->
         </div>
@@ -25,9 +25,18 @@ export default {
     }
 }
 </script>
-<style>
-    .modal {
-        width: 50%;
-        height: 35%;
+<style scoped>
+    .modal { max-height: 100%; overflow: visible}
+    .datepicker-container.modal-content {
+        display: -webkit-box !important;
+        display: -webkit-flex !important;
+        display: -ms-flexbox !important;
+        display: flex !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-box-direction: normal !important;
+        -webkit-flex-direction: column !important;
+        -ms-flex-direction: column !important;
+        flex-direction: column !important;
+        padding: 0 !important;
     }
 </style>

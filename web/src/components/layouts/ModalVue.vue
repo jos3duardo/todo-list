@@ -2,9 +2,9 @@
     <div :id="identificador" class="modal">
         <div class="modal-content">
             <h4>{{titulo}}</h4>
-            <slot></slot>
-        </div>
-        <div class="modal-footer">
+            <slot name="content"></slot>
+<!--        </div>-->
+<!--        <div class="modal-footer">-->
             <slot name="footer"></slot>
 <!--            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fecha</a>-->
         </div>
@@ -25,9 +25,6 @@ export default {
     }
 }
 </script>
-<style>
-    .modal {
-        width: 50%;
-        height: 35%;
-    }
+<style scoped>
+
 </style>
