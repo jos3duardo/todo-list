@@ -28,7 +28,7 @@ class ListTaskController extends Controller
     {
         try {
             $user = $request->user();
-            return ['status' => true , 'data' => ListTaskResource::collection(ListTask::user($user->id)->get())];
+                return ['status' => true , 'listas' => ListTaskResource::collection(ListTask::user($user->id)->get())];
         }catch (\Exception $err){
             return $err->getMessage();
         }
@@ -50,7 +50,7 @@ class ListTaskController extends Controller
                 ];
             }
             $listTask = $this->listTaskService->createListTask($request);
-            return ['status' => true , 'data' => new ListTaskResource($listTask)];
+            return ['status' => true , new ListTaskResource($listTask)];
         }catch (\Exception $err){
             return $err->getMessage();
         }

@@ -1,27 +1,33 @@
 <template>
-    <!-- Modal Structure -->
     <div :id="identificador" class="modal">
         <div class="modal-content">
-            <h4>Modal Header</h4>
-            <p>A bunch of text</p>
+            <h4>{{titulo}}</h4>
+            <slot></slot>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            <slot name="footer"></slot>
+<!--            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fecha</a>-->
         </div>
     </div>
 </template>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems);
-    });
-    export default {
-        name: 'Modal',
-        props: ['identificador'],
-        data(){
-            return {
+export default {
+    name: 'Modal',
+    props: ['identificador','titulo'],
+    data(){
+        return {
 
-            }
         }
+    },
+    mounted() {
+        let elems = document.querySelectorAll('.modal');
+        let instances = M.Modal.init(elems);
     }
+}
 </script>
+<style>
+    .modal {
+        width: 50%;
+        height: 35%;
+    }
+</style>
