@@ -1,7 +1,7 @@
 <template>
   <span>
     <header>
-      <nav-bar-vue cor="green darken-1" url="/" :logo="logo">
+      <nav-bar-vue cor="grey darken-1" url="/" :logo="logo">
         <li> <router-link to="/">Home</router-link></li>
         <li v-if="!usuario"> <router-link to="/login">Login</router-link></li>
         <li v-if="!usuario"> <router-link to="/cadastro">Cadastra-se</router-link></li>

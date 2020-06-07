@@ -89,7 +89,6 @@
         reader.readAsDataURL(arquivo[0]);
       },
       perfil(){
-        console.log(this.$store.getters.getToken)
         this.$http.put(this.$urlAPI+`users/${this.id}`, {
 
             name: this.name,

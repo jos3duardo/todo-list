@@ -3,36 +3,47 @@
     <ul class="collapsible popout">
       <li v-if="listas" v-for="lista in listas" :key="lista.id">
         <div class="collapsible-header"><i class="material-icons">event_note</i>{{lista.title}}</div>
-        <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+        <div class="collapsible-body">
+          <div class="row">
+            <div class="col s8 m8">
+              Data criação: {{ lista.data }}
+            </div>
+            <div class="col s4 m4 right-align">
+              <button class="btn waves-light waves-effect grey darken-3 z-depth-3" v-on:click="editarLista(lista.id , lista.title)"><i class="material-icons">edit</i></button>
+              <a  href="#!" class="waves-effect waves-light btn modal-trigger" v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i> </a>
+            </div>
+          </div>
+          <hr>
+        </div>
       </li>
     </ul>
-
-<!--    <modal-vue v-for="item in modais" :key="item.modal" :identificador="item.modal" :titulo="item.title">-->
-<!--      <form class="col s12">-->
-<!--        <div class="row">-->
-<!--          <div class="input-field col s6">-->
-<!--            <input id="last_name" type="text" class="validate" v-model="item.name">-->
-<!--            <label for="last_name">{{item.label}}</label>-->
-<!--          </div>-->
-<!--          <span slot="footer">-->
-<!--          <button class="btn waves-light waves-effect" v-on:click="cadastro()">Enviar</button>-->
-
-<!--          </span>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </modal-vue>-->
 
     <modal-vue titulo="Criar nova lista de tarefas" identificador="lista">
       <div class="col s12">
         <div class="row">
           <div class="input-field col s12 m12">
-            <input id="last_name" type="text" class="validate" v-model="novaTarefa">
+            <input id="list_name" type="text" class="validate" v-model="novaTarefa">
+            <label for="list_name">Nome da Lista</label>
+          </div>
+        </div>
+      </div>
+      <span slot="footer">
+        <button class="btn waves-light waves-effect modal-close" v-on:click="criaLista()">Enviar</button>
+      </span>
+    </modal-vue>
+
+    <modal-vue titulo="Editar lista de tarefas" identificador="editar">
+      <div class="col s12">
+        <div class="row">
+          <div class="input-field col s12 m12">
+            <input type="hidden" class="validate" v-model="idTarefa">
+            <input id="last_name" type="text" class="validate" v-model="tituloTarefa">
             <label for="last_name">Nome da Lista</label>
           </div>
         </div>
       </div>
       <span slot="footer">
-        <button class="btn waves-light waves-effect modal-close" v-on:click="lista()">Enviar</button>
+        <button class="btn waves-light waves-effect modal-close" v-on:click="atualizarLista(idTarefa, tituloTarefa)">Enviar</button>
       </span>
     </modal-vue>
 
@@ -65,6 +76,8 @@ export default {
     return{
       novaTarefa: '',
       novaCategoria: '',
+      tituloTarefa:'',
+      idTarefa:'',
       listas:[],
       modais: [
         { modal: 'lista', title: 'Criar Lista de Tarefa', icon: 'event_note', cor: 'red', label: 'Nome da Lista', action: 'lista', name: 'novaTarefa' },
@@ -79,31 +92,41 @@ export default {
     });
   },
   created() {
-    this.$http.get(this.$urlAPI+`list-task`,
+    this.listar()
+  },
+  methods:{
+    listar(){
+      this.$http.get(this.$urlAPI+`list-task`,
       {
         "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
       })
       .then( response => {
-        console.log(response)
         this.listas = response.data.listas
       })
       .catch(e => {
         console.log(e)
         alert("Erro! Tente novamente mais tarde")
       })
-  },
-  methods:{
-    lista(){
-      console.log()
+    },
+    criaLista(){
       this.$http.post(this.$urlAPI+`list-task`, {
         title: this.novaTarefa
       },{
         "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
       })
       .then( response => {
-        console.log(response)
-        this.listas.push(response.data[0])
-        this.novaTarefa = ''
+        if(response.data.status){
+          console.log(response)
+          this.listar()
+          this.novaTarefa = ''
+        }else if(response.data.status === false) {
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " \n";
+          }
+          alert(errors);
+        }
       })
       .catch(e => {
         console.log(e)
@@ -111,8 +134,61 @@ export default {
       })
     },
     categoria(){
-      console.log(this.categoria)
+      // console.log(this.categoria)
+    },
+    editarLista(id,titulo){
+      this.idTarefa = id;
+      this.tituloTarefa = titulo;
+      $('#editar').modal('open');
+    },
+    atualizarLista(idTarefa, tituloTarefa){
+      this.$http.put(this.$urlAPI+`list-task/`+idTarefa, {
+        title: tituloTarefa
+      },{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        if (response.data.status) {
+          this.listar()
+          this.tituloTarefa = ''
+        } else if (response.data.status === false) {
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " \n";
+          }
+          alert(errors);
+        }
+      })
+    },
+    apagarLista(id){
+      this.$http.post(this.$urlAPI+`list-task/`+id,
+      {_method: 'delete'}
+      ,{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        if(response.data.status){
+          this.listar()
+        }else if(response.data.status === false) {
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " \n";
+          }
+          alert(errors);
+        }
+      })
+      .catch(e => {
+        console.log(e)
+        alert("Erro! Tente novamente mais tarde")
+      })
     }
   }
 }
 </script>
+<style>
+  button{
+    margin: 0 8px;
+  }
+</style>

@@ -11,8 +11,8 @@
           <input type="email" placeholder="E-mail" autocomplete="off" v-model="email">
           <input type="password" placeholder="Senha" autocomplete="off" v-model="password">
           <input type="password" placeholder="Confirme sua Senha" autocomplete="off" v-model="password_confirmation">
-          <button class="btn waves-light waves-effect" v-on:click="cadastro()">Enviar</button>
-          <router-link to="/login"  id="espaco"  class="btn waves-light waves-effect orange">Já tenho conta</router-link>
+          <button class="btn waves-light waves-effect z-depth-5" v-on:click="cadastro()">Enviar</button>
+          <router-link to="/login"  id="espaco"  class="btn waves-light waves-effect orange z-depth-5">Já tenho conta</router-link>
         </span>
       </span>
   </login-layout>
