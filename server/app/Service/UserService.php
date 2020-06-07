@@ -54,13 +54,22 @@ class UserService
         return $user;
     }
 
+    public function updateUser($data, $user){
+        $user->username = $data['username'];
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+
+
+        return $user;
+    }
+
     /**
      * @param Request $request
      * @param User $user
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateWitPassword(Request $request,User $user){
-        return  Validator::make($request->all(), [
+    public function validateWitPassword($data,User $user){
+        return  Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
@@ -73,11 +82,75 @@ class UserService
      * @param User $user
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateNoPasswordUpdate(Request $request,User $user){
-        return Validator::make($request->all(), [
+    public function validateNoPasswordUpdate($data,User $user){
+        return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
         ]);
+    }
+
+    public function validateImage($data, $user){
+        Validator::extend('base64image', function ($attribute, $value, $parameters, $validator) {
+            $explode = explode(',', $value);
+            $allow = ['png', 'jpg', 'svg','jpeg'];
+            $format = str_replace(
+                [
+                    'data:image/',
+                    ';',
+                    'base64',
+                ],
+                [
+                    '', '', '',
+                ],
+                $explode[0]
+            );
+            // check file format
+            if (!in_array($format, $allow)) {
+                return false;
+            }
+            // check base64 format
+            if (!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $explode[1])) {
+                return false;
+            }
+            return true;
+        });
+
+        return Validator::make($data,
+            ['image' => 'base64image'],
+            ['base64image'=> 'Imagem inválida']
+        );
+    }
+
+    public function saveUserImage($data, $user){
+        $time = time();
+        $diretorioPai = 'perfils';
+        $diretorioImagem = $diretorioPai.DIRECTORY_SEPARATOR.'perfil_id'.$user->id;
+        $ext = substr($data['image'], 11, strpos($data['image'], ';') -11 );
+
+        $urlImagem = $diretorioImagem.DIRECTORY_SEPARATOR.$time.'.'.$ext;
+
+        $file = str_replace('data:image/'.$ext.';base64', '', $data['image']);
+        $file = base64_decode($file);
+
+        if (!file_exists($diretorioPai)){
+            mkdir($diretorioPai, 0700);
+        }
+
+        if ($user->image){
+            $imgUser = str_replace(asset('/'), '', $user->image);
+
+            if (file_exists($imgUser)){
+                unlink($imgUser);
+            }
+        }
+
+        if (!file_exists($diretorioImagem)){
+            mkdir($diretorioImagem, 0700);
+        }
+
+        file_put_contents($urlImagem, $file);
+
+        return $urlImagem;
     }
 }

@@ -39,7 +39,7 @@
     methods: {
       cadastro(){
         console.log("ok");
-        this.$http.post(this.$urlAPI+`users`, {
+        this.$http.post(this.$urlAPI+`register`, {
           name: this.name,
           username: this.username,
           email: this.email,
@@ -54,7 +54,7 @@
                 this.$store.commit('setUsuario', response.data.user)
                 sessionStorage.setItem('usuario', JSON.stringify(response.data.user))
                 this.$router.push('/')
-              }else if(response.data.status === false && response.data.validate){
+              }else if(response.data.status === false){
                 // erros de validação
                 console.log('erros de validação')
                 let errors = '';

@@ -22,12 +22,6 @@
         </div>
       </div>
     </main>
-<!--    <footer-vue cor="green darken-1" logo="Social" descricao="Teste de descrição" ano="2020">-->
-<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>-->
-<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>-->
-<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>-->
-<!--        <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>-->
-<!--    </footer-vue>-->
   </span>
 </template>
 

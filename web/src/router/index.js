@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from "../views/Login";
 import Cadastro from "../views/Cadastro";
+import Perfil from "../views/Perfil";
 Vue.use(VueRouter)
 
   const routes = [
@@ -21,6 +22,11 @@ Vue.use(VueRouter)
     name: 'Cadastro',
     component: Cadastro
   },
+  {
+    path: '/perfil',
+    name: 'Perfil',
+    component: Perfil
+  }
 ]
 
 const router = new VueRouter({

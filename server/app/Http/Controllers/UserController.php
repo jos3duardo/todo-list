@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Service\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 class UserController extends Controller
 {
     private $userService;
@@ -70,7 +72,7 @@ class UserController extends Controller
      *
      * @param  Request  $request
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         try {
             $validate = $this->userService->validateStore($request);
@@ -120,35 +122,45 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         try {
-            if (isset($request->password)){
-                $validate = $this->userService->validateWitPassword($request,$user);
+            $data = $request->all();
+            if (isset($data['password'])){
+                $validate = $this->userService->validateWitPassword($data,$user);
                 if ($validate->fails()){
                     return [
                         "status" => false,
                         "errors" => $validate->errors()
                     ];
                 }
-                $user->password = Hash::make($request->password);
-            }else{
-                $validate = $this->userService->validateNoPasswordUpdate($request, $user);
-                if ($validate->fails()){
+                $user->password = Hash::make($data['password']);
+            }
+            if (isset($data['image'])){
+                $validate = $this->userService->validateImage($data, $user);
+
+                if($validate->fails()){
                     return [
                         "status" => false,
                         "errors" => $validate->errors()
                     ];
                 }
-                $user->username = $request->username;
-                $user->name = $request->name;
-                $user->email = $request->email;
+                $user->image = $this->userService->saveUserImage($data, $user);
             }
 
-            $user->fill($request->all());
+            $validate = $this->userService->validateNoPasswordUpdate($data, $user);
+            if ($validate->fails()){
+                return [
+                    "status" => false,
+                    "errors" => $validate->errors()
+                ];
+            }
+            $user = $this->userService->updateUser($data, $user);
+
             if(!$user->save()){
                 return [
                     "status" => false,
                     "errors" => 'O usuario não pode ser atualizado'
                 ];
             }
+            $user->token =  $user->createToken($user->username)->plainTextToken;
             return [
                 "status" => true,
                 "user" => new UserResource($user)

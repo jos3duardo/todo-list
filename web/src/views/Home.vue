@@ -1,9 +1,13 @@
 <template>
-  <site-layout></site-layout>
+  <site-layout>
+    <h3>Home</h3>
+    <h3>Home</h3>
+    <h3>Home</h3>
+    <h3>Home</h3>
+  </site-layout>
 </template>
 
 <script>
-import GridVue from "../components/layouts/GridVue";
 import SiteLayout from "../layouts/SiteLayout";
 
 export default {

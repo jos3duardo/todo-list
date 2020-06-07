@@ -54,7 +54,7 @@ class User extends Authenticatable
     }
 
     public function getImageAttribute($value){
-        return asset('images/users/'.$value);
+        return asset($value);
     }
 
     public function stickynote(){
