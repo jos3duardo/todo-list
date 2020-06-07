@@ -1,7 +1,7 @@
 <template>
   <site-layout>
     <ul class="collapsible popout">
-      <li v-if="listas" v-for="lista in listas" :key="lista.id">
+      <li v-for="lista in listas" :key="lista.id">
         <div class="collapsible-header"><i class="material-icons">event_note</i>{{lista.title}}</div>
         <div class="collapsible-body">
           <div class="row">
@@ -9,15 +9,15 @@
               Data criação: {{ lista.data }}
             </div>
             <div class="col s12 m4 right-align">
-              <a  href="#!"
+              <a  href="#"
                   class="btn waves-light waves-effect grey darken-3 z-depth-3 modal-trigger tooltipped"
                   data-position="top"
                   data-tooltip="I am a tooltip"
-                  v-on:click="criarTarefa(lista.id , lista.title)">
+                  v-on:click="abreModalNovaTarefa(lista.id)">
                 <i class="material-icons">assignment</i>
               </a>
               <a :class="'btn waves-light waves-effect'+corBtn" v-on:click="editarLista(lista.id , lista.title)"><i class="material-icons">edit</i></a>
-              <a  href="#!" :class="'btn waves-light waves-effect modal-trigger'+ corBtn " v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i></a>
+              <a  href="#" :class="'btn waves-light waves-effect modal-trigger'+ corBtn " v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i></a>
             </div>
           </div>
           <hr>
@@ -76,51 +76,38 @@
 
     <modal-task-vue titulo="Criar Tarefa" identificador="tarefa">
       <span slot="content">
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">mode_edit</i>
-            <input id="first_name" type="text" class="validate">
-            <label for="first_name">Nome</label>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="input-field col s12 m6">
-            <i class="Tiny material-icons prefix">date_range</i>
-            <input id="data_start" type="text"  class="datepicker">
-            <label for="data_start">Data inicio</label>
-          </div>
-          <div class="input-field col s12 m6">
-            <i class="Tiny material-icons prefix">date_range</i>
-            <input id="data_stop" type="text" class="datepicker">
-            <label for="data_stop">Data termino</label>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col s12">
-            <div class="row">
-              <div class="input-field col s12">
-                <i class="material-icons prefix">apps</i>
-                <input type="text" id="autocomplete-input" class="autocomplete">
-                <label for="autocomplete-input">Categoria</label>
-              </div>
+        <form action="">
+          <div class="row">
+            <div class="input-field col s12 m12">
+              <i class="material-icons prefix">mode_edit</i>
+              <input id="first_name" type="text" class="validate" v-model="title">
+              <label for="first_name">Nome</label>
+            </div>
+            <div class="input-field col s12 m6">
+              <i class=" material-icons prefix">date_range</i>
+              <input id="data_start" type="text" class="datepicker validate" readonly>
+              <label for="data_start">Data inicio</label>
+            </div>
+            <div class="input-field col s12 m6">
+              <i class="material-icons prefix">date_range</i>
+              <input id="data_stop" type="text" class="datepicker" readonly >
+              <label for="data_stop">Data termino</label>
+            </div>
+            <div class="input-field col s12 m12">
+              <i class="material-icons prefix">apps</i>
+              <input type="text" id="category" v-model="category_id">
+              <label for="category">Categoria</label>
+            </div>
+            <div class="input-field col s12 m12">
+              <i class="material-icons prefix">border_color</i>
+              <textarea id="icon_prefix2" class="materialize-textarea" v-model="text"></textarea>
+              <label for="icon_prefix2">Texto</label>
             </div>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="Tiny material-icons prefix">mode_edit</i>
-            <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
-            <label for="icon_prefix2">First Name</label>
-          </div>
-        </div>
+        </form>
       </span>
-
-
       <span slot="footer">
-        <button class="btn waves-light waves-effect modal-close" v-on:click="criarCategoria()">Enviar</button>
+        <button class="btn waves-light waves-effect modal-close" v-on:click="criarTarefa()">Enviar</button>
       </span>
     </modal-task-vue>
 
@@ -152,20 +139,26 @@ export default {
     ModalVue,
     ModalTaskVue
   },
-   data(){
+  data(){
     return {
       corBtn: ' grey darken-3 z-depth-3',
-      novaTarefa: '',
+      title:'',
+      date:'a',
+      category_id:'',
+      date_stop:'',
+      text:'',
+      novaTarefa:'',
       nomeCategoria: '',
-      categorias: {},
+      categorias: [],
+      categoriasTestes: [],
       tituloTarefa:'',
       idTarefa:'',
       listas:[],
       modais: [
         { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3' },
         { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3' },
+      ],
 
-      ]
     }
   },
   mounted () {
@@ -182,10 +175,13 @@ export default {
       data: this.categorias
     });
 
+    let elemSelect = document.querySelectorAll('select');
+    let instancesSelect = M.FormSelect.init(elemSelect);
+
     let dates = document.querySelectorAll('.datepicker');
     let instanceDates = M.Datepicker.init(dates,{
       autoClose: true,
-      selectYears: 10,
+      format:'dd-mm-yyyy',
       i18n: {
         months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
@@ -193,7 +189,6 @@ export default {
         weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
         weekdaysAbbrev: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
         today: 'Hoje',
-        clear: 'Limpar',
         cancel: 'Sair',
         done: 'Confirmar',
         labelMonthNext: 'Próximo mês',
@@ -210,22 +205,24 @@ export default {
   },
   methods:{
     listarCategorias(){
-      this.$http.get(this.$urlAPI+`categoriyes`,
+      this.$http.get(this.$urlAPI+`category`,
         {
           "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
         })
         .then( response => {
           if(response.data.status){
-            for (let item of (response.data.categories)) {
-              this.categorias += item.name
+            for (let cat of (response.data.data)) {
+              this.categoriasTestes.push(cat)
             }
+            this.categorias = response.data.data.forEach()
+          }else{
+            // erros de validação
+            let errors = '';
+            for (let error of Object.values(response.data.errors)) {
+              errors += error + " \n";
+            }
+            M.toast({html: errors})
           }
-          // erros de validação
-          let errors = '';
-          for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
-          }
-          M.toast({html: errors})
         })
         .catch(e => {
           console.log(e)
@@ -258,7 +255,7 @@ export default {
         if(response.data.status){
           console.log(response)
           M.toast({html: 'Lista criada com sucesso'})
-          this.listar()
+          this.listarListaTarefas()
           this.novaTarefa = ''
         }else if(response.data.status === false) {
           // erros de validação
@@ -289,7 +286,7 @@ export default {
       })
       .then( response => {
         if (response.data.status) {
-          this.listar()
+          this.listarListaTarefas()
           this.tituloTarefa = ''
         } else if (response.data.status === false) {
           // erros de validação
@@ -312,7 +309,7 @@ export default {
         console.log(response)
         if(response.data.status){
           M.toast({html: response.data.message})
-          this.listar()
+          this.listarListaTarefas()
         }
         // erros de validação
         let errors = '';
@@ -338,8 +335,8 @@ export default {
         if(response.data.status){
           console.log(response)
           M.toast({html: 'Categoria criada com sucesso'})
-          this.listar()
-          this.novaTarefa = ''
+          this.listarListaTarefas()
+          this.novaCategoria = ''
         }else if(response.data.status === false) {
           // erros de validação
           let errors = '';
@@ -357,6 +354,42 @@ export default {
       })
     },
     criarTarefa(id){
+      let date = $('#data_start').val()
+      let date_stop = $('#data_stop').val()
+
+      console.log(date, date_stop)
+      this.$http.post(this.$urlAPI+`list-task`, {
+        title: this.title,
+        date: date,
+        category_id: this.category_id,
+        date_stop: date_stop,
+        text: this.text
+      },{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        if(response.data.status){
+          console.log(response)
+          M.toast({html: 'Tarefa criada com sucesso'})
+          this.novaTarefa = ''
+        }else if(response.data.status === false) {
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " \n";
+          }
+          M.toast({html: errors})
+          // alert(errors);
+        }
+      })
+      .catch(e => {
+        console.log(e)
+        M.toast({html: 'Erro! Tente novamente mais tarde'})
+        // alert("Erro! Tente novamente mais tarde")
+      })
+
+    },
+    abreModalNovaTarefa(){
       $('#tarefa').modal('open');
     }
   }

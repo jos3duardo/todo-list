@@ -27,16 +27,4 @@ export default {
 </script>
 <style scoped>
     .modal { max-height: 100%; overflow: visible}
-    .datepicker-container.modal-content {
-        display: -webkit-box !important;
-        display: -webkit-flex !important;
-        display: -ms-flexbox !important;
-        display: flex !important;
-        -webkit-box-orient: vertical !important;
-        -webkit-box-direction: normal !important;
-        -webkit-flex-direction: column !important;
-        -ms-flex-direction: column !important;
-        flex-direction: column !important;
-        padding: 0 !important;
-    }
 </style>
