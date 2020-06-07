@@ -1,7 +1,7 @@
 <template>
   <span>
     <header>
-      <nav-bar-vue cor="green darken-1" url="/" logo="Gestor de Tarefas">
+      <nav-bar-vue cor="green darken-1" url="/" :logo="logo">
         <li v-if="!usuario"> <router-link to="/login">Login</router-link></li>
         <li v-if="!usuario"> <router-link to="/cadastro">Cadastra-se</router-link></li>
         <li v-if="usuario"> <router-link to="/perfil">{{usuario.name}}</router-link></li>
@@ -35,7 +35,8 @@
     name: 'LoginLayout',
     data(){
       return {
-        usuario: false
+        usuario: false,
+        logo: 'Lista de afazeres'
       }
     },
     components: {
