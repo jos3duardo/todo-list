@@ -2,7 +2,8 @@
   <span>
     <header>
       <nav-bar-vue cor="grey darken-1" url="/" :logo="logo">
-        <li> <router-link to="/">Home</router-link></li>
+        <li> <router-link to="/">Tarefas</router-link></li>
+        <li> <router-link to="/categoria">Categorias</router-link></li>
         <li v-if="!usuario"> <router-link to="/login">Login</router-link></li>
         <li v-if="!usuario"> <router-link to="/cadastro">Cadastra-se</router-link></li>
         <li v-if="usuario"> <router-link to="/perfil">{{usuario.name}}</router-link></li>

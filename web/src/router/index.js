@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Login from "../views/Login";
 import Cadastro from "../views/Cadastro";
 import Perfil from "../views/Perfil";
+import Categoria from "../views/Categoria";
 Vue.use(VueRouter)
 
   const routes = [
@@ -26,6 +27,11 @@ Vue.use(VueRouter)
     path: '/perfil',
     name: 'Perfil',
     component: Perfil
+  },
+  {
+    path: '/categoria',
+    name: 'Categoria',
+    component: Categoria
   }
 ]
 

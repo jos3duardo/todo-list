@@ -13,6 +13,7 @@
     <ul class="sidenav" id="mobile-demo">
       <li><a href="/"><i class="material-icons">home</i> Home</a></li>
       <li><a href="/perfil"><i class="material-icons">person</i> Perfil</a></li>
+      <li><a href="/categoria"><i class="material-icons">apps</i> Categoria</a></li>
       <li><a v-on:click="sair()"><i class="material-icons">reply_all</i> Sair</a></li>
     </ul>
 
