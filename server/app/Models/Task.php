@@ -11,7 +11,7 @@ class Task extends Model
     use SoftDeletes, TenantModels;
 
     protected $fillable = [
-        'title', 'date','user_id','category_id','sticky_notes_id'
+        'title', 'date','user_id','category_id','sticky_notes_id','date_stop','text'
     ];
 
     public function getCreatedAtAttribute(){

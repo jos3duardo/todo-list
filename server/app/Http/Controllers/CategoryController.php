@@ -34,6 +34,16 @@ class CategoryController extends Controller
         }
     }
 
+    public function category(Request $request)
+    {
+        try {
+            $user = $request->user();
+            return ['status' => true , 'categories' =>  Category::user($user->id)->get('name')];
+        }catch (\Exception $err){
+            return $err->getMessage();
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

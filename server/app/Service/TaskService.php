@@ -15,6 +15,8 @@ class TaskService
         return Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'date' => ['required'],
+            'date_stop' => ['required'],
+            'text' => ['required'],
             'category_id' => ['required'],
         ]);
     }
@@ -23,6 +25,8 @@ class TaskService
         return Validator::make($request->all(), [
             'title' => ['required','string','max:255'],
             'date' => ['required'],
+            'date_stop' => ['required'],
+            'text' => ['required'],
             'category_id' => ['required']
         ]);
     }
@@ -32,6 +36,8 @@ class TaskService
         $task = Task::firstOrCreate([
             'title' => $request->title,
             'date' => dateParse($request->date),
+            'date_stop' => dateParse($request->date_stop),
+            'text' => $request->date,
             'category_id' => $request->category_id,
             'user_id' => $user->id,
         ]);
