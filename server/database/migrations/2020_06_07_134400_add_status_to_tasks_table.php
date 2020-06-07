@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTextDateStopToTasksTable extends Migration
+class AddStatusToTasksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddTextDateStopToTasksTable extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->longText('text');
-            $table->date('date_stop')->nullable();
+            $table->boolean('status')->default(1);
         });
     }
 
@@ -27,8 +26,7 @@ class AddTextDateStopToTasksTable extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('text');
-            $table->dropColumn('date_stop');
+            $table->dropColumn('status');
         });
     }
 }
