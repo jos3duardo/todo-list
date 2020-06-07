@@ -20,6 +20,7 @@ class TaskResource extends JsonResource
             'data conclusão' => $this->date_stop,
             'usuario' => $this->user->name,
             'categoria' => $this->category->name,
+            'status'=> $this->status == 1 ? 'Em andamento' : 'Finalizada',
             'lembretes' => $this->stickynote
         ];
     }
