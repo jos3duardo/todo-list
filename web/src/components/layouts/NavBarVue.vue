@@ -27,7 +27,7 @@
     props: ['cor','logo','url'],
     data () {
       return {
-        usuario: false,
+        usuario: '',
       }
     },
     methods: {
@@ -39,11 +39,11 @@
       }
     },
     mounted() {
-      // let elems = document.querySelectorAll('.dropdown-trigger');
-      // let instances = M.Dropdown.init(elems, {
-      //   alignment:'left',
-      //   autoTrigger: true
-      // });
+      let usuarioAux =  this.$store.getters.getUsuario
+      if (usuarioAux){
+        this.usuario = true
+
+      }
       var elems = document.querySelectorAll('.sidenav');
       var instances = M.Sidenav.init(elems);
     }
