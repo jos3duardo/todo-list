@@ -456,6 +456,7 @@ export default {
         if(response.data.status){
           M.toast({html: 'Tarefa criada com sucesso'})
           this.novaTarefa = ''
+          this.listarListaTarefas()
         }else {
           // erros de validação
           let errors = '';
