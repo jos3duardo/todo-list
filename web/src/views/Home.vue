@@ -22,17 +22,35 @@
           <div class="row">
             <ul class="collection">
               <li class="collection-item avatar" v-for="task in lista.tasks" :key="task.id">
-                <i class="material-icons circle blue-grey">library_books</i>
-                <span class="title">{{task.titulo}}</span>
-                <p>iniciado em <b class="green-text">{{ task.inicio}}</b> previsão de tremino em <b class="red-text">{{ task.fim}}</b></p>
-                <p>{{ task.status }}</p>
-                <p><b>Categoria:</b> {{ task.categoria }}</p>
-                <p><b>Texto: </b>{{ task.texto}}</p>
-                <a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
+                <div class="row">
+                  <div class="col s2 m1">
+                    <i class="material-icons circle blue-grey">library_books</i>
+<!--                    <a href="#!"  class="btn btn-small" >-->
+<!--                      <i class="small material-icons">exposure_plus_1</i>-->
+<!--                    </a>-->
+
+                  </div>
+                  <div class="col s10 m12">
+                    <span class="title">{{task.titulo}}</span>
+                    <p>iniciado em <b class="green-text">{{ task.inicio}}</b> previsão de tremino em <b class="red-text">{{ task.fim}}</b></p>
+                    <p>{{ task.status }}</p>
+                    <p><b>Categoria:</b> {{ task.categoria }}</p>
+                    <p><b>Texto: </b>{{ task.texto}}</p>
+                  </div>
+                </div>
+
+                <a href="#!" title="Apaga tarefa" class="secondary-content" v-on:click="apagaTarefa(task.id)"><i class="material-icons red-text">delete</i></a>
                 <hr>
                 <ul class="collection">
-                  <h6>Lembretes</h6>
-                  <a href="#!"  class=""  v-on:click="abreModalLembrete(task.id, task.titulo)"><i class="small material-icons">exposure_plus_1</i></a>
+                  <div class="row">
+                    <div class="col s2 m1">
+                      <a href="#!"  class="btn btn-small"  v-on:click="abreModalLembrete(task.id, task.titulo)"><i class="small material-icons">exposure_plus_1</i></a>
+                    </div>
+                    <div class="col s10 m11">
+                      <h6 class="center-align">Lembretes</h6>
+                    </div>
+                  </div>
+                  <hr>
                   <li class="collection-item" v-for="lembrete in task.lembretes" :key="lembrete.id">
                     <button href="#!"  class="left btn-small red" v-on:click="apagarLembrete(lembrete.id)"><i class="material-icons">close</i></button>
                     {{lembrete.titulo}}
@@ -128,6 +146,15 @@
             <input id="data_stop" type="text" class="datepicker" readonly >
             <label for="data_stop">Data termino</label>
           </div>
+          <div class="row">
+            <div class="input-field col s2 m1">
+              <a class='prefix dropdown-trigger btn' href='#' data-target='selecionaCategoria'><i class="material-icons">apps</i></a>
+            </div>
+            <div class="input-field col s10 m11">
+              <label for="category"></label>
+              <input id="category" type="text" readonly v-model="categoriaNome">
+            </div>
+          </div>
 
           <div class="input-field col s12 m12">
             <i class="material-icons prefix">border_color</i>
@@ -135,13 +162,18 @@
             <label for="icon_prefix2">Texto</label>
           </div>
         </div>
-        <div class="input-field col s12 m12">
-          <div class="collection">
-            <a href="#!" v-on:click="setIdcategori(category.id, category.name, item)" :class="'collection-item ' + category.active  " v-for="(category,item) in categoriasTestes" :key="category.id">
-              {{category.name}}
+        <!-- Dropdown Trigger -->
+
+
+              <!-- Dropdown Structure -->
+        <ul id='selecionaCategoria' class='dropdown-content'>
+          <li v-on:click="setIdcategori(category.id, category.name, item)" :class="'collection-item ' + category.active  " v-for="(category,item) in categoriasTestes" :key="category.id">
+            <a href="#!">
+                {{category.name}}
             </a>
-          </div>
-        </div>
+          </li>
+        </ul>
+
       </span>
       <span slot="footer">
         <button class="btn waves-light waves-effect modal-close" v-on:click="criarTarefa()">Enviar</button>
@@ -191,6 +223,7 @@ export default {
       novaTarefa:'',
       nomeCategoria: '',
       categorias: [],
+      categoriaNome: '',
       categoriasTestes: [],
       tituloTarefa:'',
       idTarefa:'',
@@ -221,6 +254,12 @@ export default {
     let elemSelect = document.querySelectorAll('select');
     let instancesSelect = M.FormSelect.init(elemSelect,{
       dropdownOptions: this.categoriasTestes
+    });
+
+    let dropElem = document.querySelectorAll('.dropdown-trigger');
+    let dropInstances = M.Dropdown.init(dropElem,{
+      alignment: 'top',
+      // isScrollable: true
     });
 
     let dates = document.querySelectorAll('.datepicker');
@@ -469,7 +508,7 @@ export default {
     },
     setIdcategori(id,title, key){
       this.category_id = id
-
+      this.categoriaNome = title
       this.categoriasTestes.forEach(item => {
         if (id === item.id ){
           item.active = 'active'
@@ -486,37 +525,69 @@ export default {
     },
     apagarLembrete(id){
       this.$http.post(this.$urlAPI+`sticky-note/`+id,
-              {_method: 'delete'}
-              ,{
-                "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
-              })
-              .then( response => {
-                console.log(response)
-                if(response.data.status){
-                  M.toast({html: response.data.message})
-                  this.listarListaTarefas()
-                }else{
-                  // erros de validação
-                  let errors = '';
-                  for (let error of Object.values(response.data.errors)) {
-                    errors += error + " <br>";
-                  }
-                  M.toast({html: errors, classes: 'red'})
-                }
+      {_method: 'delete'}
+      ,{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        console.log(response)
+        if(response.data.status){
+          M.toast({html: response.data.message})
+          this.listarListaTarefas()
+        }else{
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " <br>";
+          }
+          M.toast({html: errors, classes: 'red'})
+        }
 
-              })
-              .catch(e => {
-                console.log(e)
-                // M.toast({html: '1Erro! Tente novamente mais tarde'})
-                // alert("Erro! Tente novamente mais tarde")
-              })
+      })
+      .catch(e => {
+        console.log(e)
+        // M.toast({html: '1Erro! Tente novamente mais tarde'})
+        // alert("Erro! Tente novamente mais tarde")
+      })
     },
+    apagaTarefa(id){
+      this.$http.post(this.$urlAPI+`task/`+id,
+      {_method: 'delete'}
+      ,{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        console.log(response)
+        if(response.data.status){
+          M.toast({html: response.data.message})
+          this.listarListaTarefas()
+        }else{
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " <br>";
+          }
+          M.toast({html: errors, classes: 'red'})
+        }
+      })
+      .catch(e => {
+        console.log(e)
+        // M.toast({html: '1Erro! Tente novamente mais tarde'})
+        // alert("Erro! Tente novamente mais tarde")
+      })
+    }
   }
 }
 </script>
 <style>
   button{
     margin: 0 8px;
+  }
+  .dropdown{
+    width: 500px !important;
+  }
+  .dropdown-content{
+    width: 300px !important;
   }
   .datepicker-container.modal-content {
     display: -webkit-box !important;
