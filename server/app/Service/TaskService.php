@@ -37,8 +37,8 @@ class TaskService
         $user = $request->user();
         $task = Task::create([
             'title' => $request->title,
-            'date' => dateParse($request->date),
-            'date_stop' => dateParse($request->date_stop),
+            'date' => ($request->date),
+            'date_stop' => ($request->date_stop),
             'text' => $request->date,
             'category_id' => $request->category_id,
             'list_task_id' => $request->list_task_id,
