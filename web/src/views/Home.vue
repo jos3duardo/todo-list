@@ -232,7 +232,7 @@ export default {
     let dates = document.querySelectorAll('.datepicker');
     let instanceDatePicker = M.Datepicker.init(dates,{
       autoClose: true,
-      format:'dd-mm-yyyy',
+      format:'dd/mm/yyyy',
       i18n: {
         months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
