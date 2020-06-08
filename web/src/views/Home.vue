@@ -11,13 +11,12 @@
             <div class="col s12 m4 right-align">
               <a  href="#"
                   class="btn waves-light waves-effect grey darken-3 z-depth-3 modal-trigger tooltipped"
-                  data-position="top"
-                  data-tooltip="I am a tooltip"
+                  title="Criar tarefa"
                   v-on:click="abreModalNovaTarefa(lista.id)">
                 <i class="material-icons">assignment</i>
               </a>
-              <a :class="'btn waves-light waves-effect'+corBtn" v-on:click="editarLista(lista.id , lista.title)"><i class="material-icons">edit</i></a>
-              <a  href="#" :class="'btn waves-light waves-effect modal-trigger'+ corBtn " v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i></a>
+              <a title="Editar Lista de tarefa" :class="'btn waves-light waves-effect'+corBtn" v-on:click="editarLista(lista.id , lista.title)"><i class="material-icons">edit</i></a>
+              <a title="Apagar Lista de tarefa" href="#" :class="'btn waves-light waves-effect modal-trigger'+ corBtn " v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i></a>
             </div>
           </div>
           <div class="row">
@@ -26,7 +25,8 @@
                 <i class="material-icons circle blue-grey">library_books</i>
                 <span class="title">{{task.titulo}}</span>
                 <p>iniciado em <b class="green-text">{{ task.inicio}}</b> previsão de tremino em <b class="red-text">{{ task.fim}}</b></p>
-                <p>{{ task.status}}</p>
+                <p>{{ task.status }}</p>
+                <p><b>Categoria:</b> {{ task.categoria }}</p>
                 <p><b>Texto: </b>{{ task.texto}}</p>
                 <a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
                 <hr>
@@ -112,35 +112,36 @@
 
     <modal-task-vue titulo="Criar Tarefa" identificador="tarefa">
       <span slot="content">
-        <form action="">
-          <div class="row">
-            <div class="input-field col s12 m12">
-              <i class="material-icons prefix">mode_edit</i>
-              <input id="first_name" type="text" class="validate" v-model="title">
-              <label for="first_name">Nome</label>
-            </div>
-            <div class="input-field col s12 m6">
-              <i class=" material-icons prefix">date_range</i>
-              <input id="data_start" type="text" class="datepicker validate" readonly>
-              <label for="data_start">Data inicio</label>
-            </div>
-            <div class="input-field col s12 m6">
-              <i class="material-icons prefix">date_range</i>
-              <input id="data_stop" type="text" class="datepicker" readonly >
-              <label for="data_stop">Data termino</label>
-            </div>
-            <div class="input-field col s12 m12">
-              <i class="material-icons prefix">apps</i>
-              <input type="text" id="category" v-model="category_id">
-              <label for="category">Categoria - Informar id da categoria</label>
-            </div>
-            <div class="input-field col s12 m12">
-              <i class="material-icons prefix">border_color</i>
-              <textarea id="icon_prefix2" class="materialize-textarea" v-model="text"></textarea>
-              <label for="icon_prefix2">Texto</label>
-            </div>
+        <div class="row">
+          <div class="input-field col s12 m12">
+            <i class="material-icons prefix">mode_edit</i>
+            <input id="first_name" type="text" class="validate" v-model="title">
+            <label for="first_name">Nome</label>
           </div>
-        </form>
+          <div class="input-field col s12 m6">
+            <i class=" material-icons prefix">date_range</i>
+            <input id="data_start" type="text" class="datepicker validate" readonly>
+            <label for="data_start">Data inicio</label>
+          </div>
+          <div class="input-field col s12 m6">
+            <i class="material-icons prefix">date_range</i>
+            <input id="data_stop" type="text" class="datepicker" readonly >
+            <label for="data_stop">Data termino</label>
+          </div>
+
+          <div class="input-field col s12 m12">
+            <i class="material-icons prefix">border_color</i>
+            <textarea id="icon_prefix2" class="materialize-textarea" v-model="text"></textarea>
+            <label for="icon_prefix2">Texto</label>
+          </div>
+        </div>
+        <div class="input-field col s12 m12">
+          <div class="collection">
+            <a href="#!" v-on:click="setIdcategori(category.id, category.name, item)" :class="'collection-item ' + category.active  " v-for="(category,item) in categoriasTestes" :key="category.id">
+              {{category.name}}
+            </a>
+          </div>
+        </div>
       </span>
       <span slot="footer">
         <button class="btn waves-light waves-effect modal-close" v-on:click="criarTarefa()">Enviar</button>
@@ -177,6 +178,7 @@ export default {
   },
   data(){
     return {
+      active:'',
       listaId:'',
       corBtn: ' grey darken-3 z-depth-3',
       title:'',
@@ -198,14 +200,6 @@ export default {
         { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3', title:'Criar lista de tarefas'},
         { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3', title: 'Criar categoria' },
       ],
-      selected: '',
-      options:[
-        {value:"v1",text:'description 1'},
-        {value:"v2",text:'description 2'},
-        {value:"v3",text:'description 3'},
-        {value:"v4",text:'description 4'},
-        {value:"v5",text:'description 5'},
-      ]
     }
   },
   mounted () {
@@ -269,15 +263,16 @@ export default {
               let obj = new Object();
               obj.id = cat.id
               obj.name = cat.name
+              obj.active = ''
               this.categoriasTestes.push(obj)
             }
           }else{
             // erros de validação
             let errors = '';
             for (let error of Object.values(response.data.errors)) {
-              errors += error + " \n";
+              errors += error + " <br>";
             }
-            M.toast({html: errors})
+            M.toast({html: errors, classes: 'red'})
           }
         })
         .catch(e => {
@@ -317,10 +312,9 @@ export default {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
+            errors += error + " <br>";
           }
-          M.toast({html: errors})
-          // alert(errors);
+          M.toast({html: errors, classes: 'red'})
         }
       })
       .catch(e => {
@@ -348,10 +342,9 @@ export default {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
+            errors += error + " <br>";
           }
-          M.toast({html: errors})
-          // alert(errors);
+          M.toast({html: errors, classes: 'red'})
         }
       })
     },
@@ -370,10 +363,9 @@ export default {
         // erros de validação
         let errors = '';
         for (let error of Object.values(response.data.errors)) {
-          errors += error + " \n";
+          errors += error + " <br>";
         }
-        M.toast({html: errors})
-        // alert(errors);
+        M.toast({html: errors, classes: 'red'})
       })
       .catch(e => {
         console.log(e)
@@ -397,10 +389,9 @@ export default {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
+            errors += error + " <br>";
           }
-          M.toast({html: errors})
-          // alert(errors);
+          M.toast({html: errors, classes: 'red'})
         }
       })
       .catch(e => {
@@ -426,10 +417,9 @@ export default {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
+            errors += error + " <br>";
           }
-          M.toast({html: errors})
-          // alert(errors);
+          M.toast({html: errors, classes: 'red'})
         }
       })
       .catch(e => {
@@ -461,10 +451,9 @@ export default {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
-            errors += error + " \n";
+            errors += error + " <br>";
           }
-          M.toast({html: errors})
-          // alert(errors);
+          M.toast({html: errors, classes: 'red'})
         }
       })
       .catch(e => {
@@ -477,6 +466,18 @@ export default {
     abreModalNovaTarefa(id){
       this.listaId = id
       $('#tarefa').modal('open');
+    },
+    setIdcategori(id,title, key){
+      this.category_id = id
+
+      this.categoriasTestes.forEach(item => {
+        if (id === item.id ){
+          item.active = 'active'
+        }else{
+          item.active = ''
+        }
+      })
+
     },
     abreModalLembrete(id, titulo){
       this.task_id = id
@@ -498,10 +499,9 @@ export default {
                   // erros de validação
                   let errors = '';
                   for (let error of Object.values(response.data.errors)) {
-                    errors += error + " \n";
+                    errors += error + " <br>";
                   }
-                  M.toast({html: errors})
-                  // alert(errors);
+                  M.toast({html: errors, classes: 'red'})
                 }
 
               })
