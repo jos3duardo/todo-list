@@ -16,12 +16,13 @@ class TaskResource extends JsonResource
         return [
             'id' => $this->id,
             'titulo' => $this->title,
-            'data inicio' => $this->date,
-            'data conclusão' => $this->date_stop,
+            'inicio' => $this->date,
+            'fim' => $this->date_stop,
             'usuario' => $this->user->name,
+            'texto' => $this->text,
             'categoria' => $this->category->name,
             'status'=> $this->status == 1 ? 'Em andamento' : 'Finalizada',
-            'lembretes' => $this->stickynote
+            'lembretes' => StickyNotesResource::collection($this->stickynote)
         ];
     }
 }

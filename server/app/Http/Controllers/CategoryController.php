@@ -38,7 +38,7 @@ class CategoryController extends Controller
     {
         try {
             $user = $request->user();
-            return ['status' => true , 'categories' =>  Category::user($user->id)->get('name')];
+            return ['status' => true , 'categories' =>  Category::user($user->id)->get()];
         }catch (\Exception $err){
             return $err->getMessage();
         }

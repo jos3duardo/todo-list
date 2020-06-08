@@ -18,6 +18,7 @@ class TaskService
             'date_stop' => ['required'],
             'text' => ['required'],
             'category_id' => ['required'],
+            'list_task_id' => ['required'],
         ]);
     }
 
@@ -27,18 +28,20 @@ class TaskService
             'date' => ['required'],
             'date_stop' => ['required'],
             'text' => ['required'],
+            'list_task_id' => ['required'],
             'category_id' => ['required']
         ]);
     }
 
     public function createTask(Request $request){
         $user = $request->user();
-        $task = Task::firstOrCreate([
+        $task = Task::create([
             'title' => $request->title,
             'date' => dateParse($request->date),
             'date_stop' => dateParse($request->date_stop),
             'text' => $request->date,
             'category_id' => $request->category_id,
+            'list_task_id' => $request->list_task_id,
             'user_id' => $user->id,
         ]);
         return $task;

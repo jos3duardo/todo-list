@@ -11,7 +11,7 @@ class Task extends Model
     use SoftDeletes, TenantModels;
 
     protected $fillable = [
-        'title', 'date','user_id','category_id','sticky_notes_id','date_stop','text'
+        'title', 'date','user_id','category_id','sticky_notes_id','date_stop','text','list_task_id'
     ];
 
     public function getCreatedAtAttribute(){
@@ -28,6 +28,22 @@ class Task extends Model
             return "";
     }
 
+    public function getDateAttribute()
+    {
+        if ($this->attributes['date'] != null)
+            return (new \DateTime($this->attributes['date']))->format('d/m/Y');
+        else
+            return "";
+    }
+
+    public function getDateStopAttribute(){
+        if ($this->attributes['date_stop'] != null)
+            return (new \DateTime($this->attributes['date_stop']))->format('d/m/Y');
+        else
+            return "";
+    }
+
+
     public function category(){
         return $this->belongsTo(Category::class);
     }
@@ -37,6 +53,7 @@ class Task extends Model
     }
 
     public function stickynote(){
-        return $this->belongsTo(StickyNote::class);
+        return $this->hasMany(StickyNote::class);
     }
+
 }

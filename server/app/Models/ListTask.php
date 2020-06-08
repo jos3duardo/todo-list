@@ -27,4 +27,7 @@ class ListTask extends Model
         else
             return "";
     }
+    public function task(){
+        return $this->hasMany(Task::class);
+    }
 }

@@ -17,7 +17,8 @@ class ListTaskResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'data' => $this->created_at
+            'data' => $this->created_at,
+            'tasks' => TaskResource::collection($this->task)
         ];
     }
 }

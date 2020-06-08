@@ -20,7 +20,27 @@
               <a  href="#" :class="'btn waves-light waves-effect modal-trigger'+ corBtn " v-on:click="apagarLista(lista.id)"><i class="material-icons">delete_forever</i></a>
             </div>
           </div>
-          <hr>
+          <div class="row">
+            <ul class="collection">
+              <li class="collection-item avatar" v-for="task in lista.tasks" :key="task.id">
+                <i class="material-icons circle green">library_books</i>
+                <span class="title">{{task.titulo}}</span>
+                <p><b>iniciado em </b> {{ task.inicio}} <b>previsão de tremino em </b> {{ task.fim}}</p>
+                <p>{{ task.status}}</p>
+                <p><b>Texto: </b>{{ task.texto}}</p>
+                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                <hr>
+                <div class="collection with-header">
+                  <p  class="center-align">Lembretes</p>
+                  <a class="collection-item" v-for="lembrete in task.lembretes" :key="lembrete.id">
+                    {{lembrete.titulo}}
+                  </a>
+
+                </div>
+              </li>
+
+            </ul>
+          </div>
         </div>
       </li>
     </ul>
@@ -93,10 +113,17 @@
               <input id="data_stop" type="text" class="datepicker" readonly >
               <label for="data_stop">Data termino</label>
             </div>
+<!--            <div class="input-field col s12 m12">-->
+<!--              <i class="material-icons prefix">apps</i>-->
+<!--              <input type="text" id="category" v-model="category_id">-->
+<!--              <label for="category">Categoria</label>-->
+<!--            </div>-->
             <div class="input-field col s12 m12">
-              <i class="material-icons prefix">apps</i>
-              <input type="text" id="category" v-model="category_id">
-              <label for="category">Categoria</label>
+            <i class="material-icons prefix">apps</i>
+             <select name="" id="">
+               <option v-for="opt in categoriasTestes" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+               <label for="category">Categoria</label>
+             </select>
             </div>
             <div class="input-field col s12 m12">
               <i class="material-icons prefix">border_color</i>
@@ -130,6 +157,7 @@ import SiteLayout from "../layouts/SiteLayout";
 import FloatActiontButtonVue from "../components/layouts/FloatActiontButtonVue";
 import ModalVue from "../components/layouts/ModalVue";
 import ModalTaskVue from "../components/layouts/ModalTaskVue";
+import vSelect from 'vue-select'
 
 export default {
   name: 'Home',
@@ -137,10 +165,13 @@ export default {
     SiteLayout,
     FloatActiontButtonVue,
     ModalVue,
-    ModalTaskVue
+    ModalTaskVue,
+    vSelect
   },
   data(){
     return {
+      listaId:'',
+      selected:'',
       corBtn: ' grey darken-3 z-depth-3',
       title:'',
       date:'a',
@@ -158,7 +189,6 @@ export default {
         { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3' },
         { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3' },
       ],
-
     }
   },
   mounted () {
@@ -176,10 +206,12 @@ export default {
     });
 
     let elemSelect = document.querySelectorAll('select');
-    let instancesSelect = M.FormSelect.init(elemSelect);
+    let instancesSelect = M.FormSelect.init(elemSelect,{
+      dropdownOptions: this.categoriasTestes
+    });
 
     let dates = document.querySelectorAll('.datepicker');
-    let instanceDates = M.Datepicker.init(dates,{
+    let instanceDatePicker = M.Datepicker.init(dates,{
       autoClose: true,
       format:'dd-mm-yyyy',
       i18n: {
@@ -205,16 +237,19 @@ export default {
   },
   methods:{
     listarCategorias(){
-      this.$http.get(this.$urlAPI+`category`,
+      this.$http.get(this.$urlAPI+`categories`,
         {
           "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
         })
         .then( response => {
+          console.log(response)
           if(response.data.status){
-            for (let cat of (response.data.data)) {
-              this.categoriasTestes.push(cat)
+            for (let cat of (response.data.categories)) {
+              let obj = new Object();
+              obj.id = cat.id
+              obj.name = cat.name
+              this.categoriasTestes.push(obj)
             }
-            this.categorias = response.data.data.forEach()
           }else{
             // erros de validação
             let errors = '';
@@ -358,10 +393,11 @@ export default {
       let date_stop = $('#data_stop').val()
 
       console.log(date, date_stop)
-      this.$http.post(this.$urlAPI+`list-task`, {
+      this.$http.post(this.$urlAPI+`task`, {
         title: this.title,
         date: date,
         category_id: this.category_id,
+        list_task_id: this.listaId,
         date_stop: date_stop,
         text: this.text
       },{
@@ -389,7 +425,8 @@ export default {
       })
 
     },
-    abreModalNovaTarefa(){
+    abreModalNovaTarefa(id){
+      this.listaId = id
       $('#tarefa').modal('open');
     }
   }

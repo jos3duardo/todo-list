@@ -28,7 +28,7 @@ class TaskController extends Controller
     {
         try {
             $user = $request->user();
-            return ['status' => true , 'data' => TaskResource::collection(Task::user($user->id)->get())];
+            return ['status' => true , 'data' => TaskResource::collection(Task::all())];
         }catch (\Exception $err){
             return $err->getMessage();
         }
