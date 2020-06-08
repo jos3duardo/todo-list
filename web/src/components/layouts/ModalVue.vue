@@ -1,7 +1,7 @@
 <template>
     <div :id="identificador" class="modal">
         <div class="modal-content">
-            <h4>{{titulo}}</h4>
+            <h5>{{titulo}}</h5>
             <slot name="content"></slot>
 <!--        </div>-->
 <!--        <div class="modal-footer">-->

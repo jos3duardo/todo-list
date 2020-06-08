@@ -23,27 +23,43 @@
           <div class="row">
             <ul class="collection">
               <li class="collection-item avatar" v-for="task in lista.tasks" :key="task.id">
-                <i class="material-icons circle green">library_books</i>
+                <i class="material-icons circle blue-grey">library_books</i>
                 <span class="title">{{task.titulo}}</span>
-                <p><b>iniciado em </b> {{ task.inicio}} <b>previsão de tremino em </b> {{ task.fim}}</p>
+                <p>iniciado em <b class="green-text">{{ task.inicio}}</b> previsão de tremino em <b class="red-text">{{ task.fim}}</b></p>
                 <p>{{ task.status}}</p>
                 <p><b>Texto: </b>{{ task.texto}}</p>
-                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                <a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
                 <hr>
-                <div class="collection with-header">
-                  <p  class="center-align">Lembretes</p>
-                  <a class="collection-item" v-for="lembrete in task.lembretes" :key="lembrete.id">
+                <ul class="collection">
+                  <h6>Lembretes</h6>
+                  <a href="#!"  class=""  v-on:click="abreModalLembrete(task.id, task.titulo)"><i class="small material-icons">exposure_plus_1</i></a>
+                  <li class="collection-item" v-for="lembrete in task.lembretes" :key="lembrete.id">
+                    <button href="#!"  class="left btn-small red" v-on:click="apagarLembrete(lembrete.id)"><i class="material-icons">close</i></button>
                     {{lembrete.titulo}}
-                  </a>
-
-                </div>
+                  </li>
+                </ul>
               </li>
-
             </ul>
           </div>
         </div>
       </li>
     </ul>
+
+    <modal-vue :titulo="'Criar Lembrete para tarefa: '+task_titulo" identificador="lembrete">
+      <span slot="content">
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12 m12">
+              <input id="lembrete" type="text" class="validate" v-model="nomeLembrete">
+              <label for="lembrete">Nome</label>
+            </div>
+          </div>
+        </div>
+      </span>
+      <span slot="footer">
+        <button class="btn waves-light waves-effect modal-close" v-on:click="criarLembrete()">Enviar</button>
+      </span>
+    </modal-vue>
 
     <modal-vue titulo="Criar nova lista de tarefas" identificador="lista">
       <span slot="content">
@@ -113,17 +129,10 @@
               <input id="data_stop" type="text" class="datepicker" readonly >
               <label for="data_stop">Data termino</label>
             </div>
-<!--            <div class="input-field col s12 m12">-->
-<!--              <i class="material-icons prefix">apps</i>-->
-<!--              <input type="text" id="category" v-model="category_id">-->
-<!--              <label for="category">Categoria</label>-->
-<!--            </div>-->
             <div class="input-field col s12 m12">
-            <i class="material-icons prefix">apps</i>
-             <select name="" id="">
-               <option v-for="opt in categoriasTestes" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
-               <label for="category">Categoria</label>
-             </select>
+              <i class="material-icons prefix">apps</i>
+              <input type="text" id="category" v-model="category_id">
+              <label for="category">Categoria - Informar id da categoria</label>
             </div>
             <div class="input-field col s12 m12">
               <i class="material-icons prefix">border_color</i>
@@ -142,7 +151,7 @@
     <float-actiont-button-vue>
       <ul>
         <li v-for="item in modais" :key="item.modal">
-          <a  :href="'#'+item.modal" :class="'btn-floating waves-effect waves-light btn modal-trigger '+item.cor">
+          <a :title="item.title"  :href="'#'+item.modal" :class="'btn-floating waves-effect waves-light btn modal-trigger '+item.cor">
           <i class="material-icons">{{item.icon}}</i>
           </a>
         </li>
@@ -157,7 +166,6 @@ import SiteLayout from "../layouts/SiteLayout";
 import FloatActiontButtonVue from "../components/layouts/FloatActiontButtonVue";
 import ModalVue from "../components/layouts/ModalVue";
 import ModalTaskVue from "../components/layouts/ModalTaskVue";
-import vSelect from 'vue-select'
 
 export default {
   name: 'Home',
@@ -166,17 +174,17 @@ export default {
     FloatActiontButtonVue,
     ModalVue,
     ModalTaskVue,
-    vSelect
   },
   data(){
     return {
       listaId:'',
-      selected:'',
       corBtn: ' grey darken-3 z-depth-3',
       title:'',
       date:'a',
       category_id:'',
       date_stop:'',
+      task_id: '',
+      task_titulo: '',
       text:'',
       novaTarefa:'',
       nomeCategoria: '',
@@ -184,14 +192,25 @@ export default {
       categoriasTestes: [],
       tituloTarefa:'',
       idTarefa:'',
+      nomeLembrete: '',
       listas:[],
       modais: [
-        { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3' },
-        { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3' },
+        { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3', title:'Criar lista de tarefas'},
+        { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3', title: 'Criar categoria' },
       ],
+      selected: '',
+      options:[
+        {value:"v1",text:'description 1'},
+        {value:"v2",text:'description 2'},
+        {value:"v3",text:'description 3'},
+        {value:"v4",text:'description 4'},
+        {value:"v5",text:'description 5'},
+      ]
     }
   },
   mounted () {
+    this.listarCategorias()
+
     let elems = document.querySelectorAll('.collapsible');
     let instances = M.Collapsible.init(elems,{
       accordion: false
@@ -231,8 +250,10 @@ export default {
     });
   },
   created() {
+    let elems = document.querySelectorAll('select');
+    let instances = M.FormSelect.init(elems);
+
     this.listarListaTarefas()
-    this.listarCategorias()
 
   },
   methods:{
@@ -388,11 +409,38 @@ export default {
         // alert("Erro! Tente novamente mais tarde")
       })
     },
+    criarLembrete(){
+      this.$http.post(this.$urlAPI+`sticky-note`, {
+        title: this.nomeLembrete,
+        task_id: this.task_id
+      },{
+        "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+      })
+      .then( response => {
+        if(response.data.status){
+          console.log(response)
+          M.toast({html: 'Lembrete criada com sucesso'})
+          this.listarListaTarefas()
+          this.nomeLembrete = ''
+        }else if(response.data.status === false) {
+          // erros de validação
+          let errors = '';
+          for (let error of Object.values(response.data.errors)) {
+            errors += error + " \n";
+          }
+          M.toast({html: errors})
+          // alert(errors);
+        }
+      })
+      .catch(e => {
+        console.log(e)
+        M.toast({html: 'Erro! Tente novamente mais tarde'})
+        // alert("Erro! Tente novamente mais tarde")
+      })
+    },
     criarTarefa(id){
       let date = $('#data_start').val()
       let date_stop = $('#data_stop').val()
-
-      console.log(date, date_stop)
       this.$http.post(this.$urlAPI+`task`, {
         title: this.title,
         date: date,
@@ -404,11 +452,11 @@ export default {
         "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
       })
       .then( response => {
+        console.log(response)
         if(response.data.status){
-          console.log(response)
           M.toast({html: 'Tarefa criada com sucesso'})
           this.novaTarefa = ''
-        }else if(response.data.status === false) {
+        }else {
           // erros de validação
           let errors = '';
           for (let error of Object.values(response.data.errors)) {
@@ -428,7 +476,40 @@ export default {
     abreModalNovaTarefa(id){
       this.listaId = id
       $('#tarefa').modal('open');
-    }
+    },
+    abreModalLembrete(id, titulo){
+      this.task_id = id
+      this.task_titulo = titulo
+      $('#lembrete').modal('open');
+    },
+    apagarLembrete(id){
+      this.$http.post(this.$urlAPI+`sticky-note/`+id,
+              {_method: 'delete'}
+              ,{
+                "headers": {"authorization": "Bearer " +  this.$store.getters.getToken}
+              })
+              .then( response => {
+                console.log(response)
+                if(response.data.status){
+                  M.toast({html: response.data.message})
+                  this.listarListaTarefas()
+                }else{
+                  // erros de validação
+                  let errors = '';
+                  for (let error of Object.values(response.data.errors)) {
+                    errors += error + " \n";
+                  }
+                  M.toast({html: errors})
+                  // alert(errors);
+                }
+
+              })
+              .catch(e => {
+                console.log(e)
+                // M.toast({html: '1Erro! Tente novamente mais tarde'})
+                // alert("Erro! Tente novamente mais tarde")
+              })
+    },
   }
 }
 </script>

@@ -12,7 +12,6 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 Vue.prototype.$urlAPI = 'http://127.0.0.1:8000/api/'
 
-
 new Vue({
   router,
   store,
