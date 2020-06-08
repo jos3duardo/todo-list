@@ -3,14 +3,14 @@
     <nav :class="cor || 'blue'">
       <div class="nav-wrapper container">
         <router-link :to="url || '/'" class="brand-logo">{{logo || 'Sistema'}}</router-link>
-        <a v-if="!usuario" href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <a v-if="usuario" href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
           <slot></slot>
         </ul>
       </div>
     </nav>
 
-    <ul  class="sidenav" id="mobile-demo">
+    <ul class="sidenav" id="mobile-demo">
       <li><a href="/"><i class="material-icons">home</i> Home</a></li>
       <li><a href="/perfil"><i class="material-icons">person</i> Perfil</a></li>
       <li><a href="/categoria"><i class="material-icons">apps</i> Categoria</a></li>
@@ -27,7 +27,7 @@
     props: ['cor','logo','url'],
     data () {
       return {
-        usuario: true,
+        usuario: false,
       }
     },
     methods: {
