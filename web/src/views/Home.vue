@@ -193,7 +193,7 @@ export default {
       tituloTarefa:'',
       idTarefa:'',
       nomeLembrete: '',
-      listas:[],
+      listas: [],
       modais: [
         { modal: 'lista', icon: 'event_note', cor:'grey darken-3 z-depth-3', title:'Criar lista de tarefas'},
         { modal: 'category', icon: 'apps', cor:'grey darken-3 z-depth-3', title: 'Criar categoria' },
