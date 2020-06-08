@@ -39,7 +39,7 @@ class TaskService
             'title' => $request->title,
             'date' => dateParse($request->date),
             'date_stop' => dateParse($request->date_stop),
-            'text' => $request->date,
+            'text' => $request->text,
             'category_id' => $request->category_id,
             'list_task_id' => $request->list_task_id,
             'user_id' => $user->id,
